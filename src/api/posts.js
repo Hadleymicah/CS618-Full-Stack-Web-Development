@@ -1,6 +1,3 @@
-// For communicating about posts
-//Creating a function for getting posts from a server by using a fetch method
-
 export const getPosts = async (queryParams) => {
   const res = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/posts?` +
@@ -9,13 +6,16 @@ export const getPosts = async (queryParams) => {
   return await res.json()
 }
 
-export const createPost = async (post) => {
+export const createPost = async (token, post) => {
   const res = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/
 posts`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(post),
     },
   )
