@@ -1,10 +1,28 @@
 import { Post } from '../db/models/post.js'
 import { User } from '../db/models/user.js'
 
+/* CREATE POST FUNCTION FROM BEFORE MILESTONE 1
 export async function createPost(userID, { title, contents, tags }) {
   const post = new Post({ title, author: userID, contents, tags })
   return await post.save()
 }
+*/
+// MODIFIED CREATE POST FUNCTION FOR MILESTONE 1 - ADDED INGREDIENTS AND IMAGEURL
+export async function createPost(
+  userID,
+  { title, contents, tags, ingredients, imageUrl },
+) {
+  const post = new Post({
+    title,
+    author: userID,
+    contents,
+    tags,
+    ingredients,
+    imageUrl,
+  })
+  return await post.save()
+}
+// END OF MOD FOR MILESTONE 1
 
 async function listPosts(
   query = {},
