@@ -8,6 +8,7 @@ import { useState } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
 import { getPosts } from '../api/posts.js'
+import { Helmet } from 'react-helmet-async'
 
 export function Blog() {
   const [author, setAuthor] = useState('')
@@ -23,6 +24,9 @@ export function Blog() {
 
   return (
     <div style={{ padding: 8 }}>
+      <Helmet>
+        <title>Full-Stack React Blog</title>
+      </Helmet>
       <Header />
       <br />
       <hr />
