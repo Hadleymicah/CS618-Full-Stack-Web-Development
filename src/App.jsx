@@ -7,10 +7,7 @@ const queryClient = new QueryClient()
 export function App({ children }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthContextProvider>
-        {children}
-        Rendering React components on the server 199
-      </AuthContextProvider>
+      <AuthContextProvider>{children}</AuthContextProvider>
     </QueryClientProvider>
   )
 }

@@ -27,32 +27,43 @@ Post.propTypes = {
 
 import PropTypes from 'prop-types'
 import { User } from './User.jsx'
+import { Link } from 'react-router-dom'
 
 export function Post({
   title,
   contents,
   ingredients,
   imageUrl,
-  author: userId,
+  author,
+  _id,
+  fullPost = false,
 }) {
   return (
     <article>
-      <h3>{title}</h3>
-      {imageUrl && (
+      {fullPost ? (
+        <h3>{title}</h3>
+      ) : (
+        <Link to={`/posts/${_id}`}>
+          <h3>{title}</h3>
+        </Link>
+      )}
+      {fullPost && imageUrl && (
         <img src={imageUrl} alt={title} style={{ maxwidth: '100%' }} />
       )}
-      {ingredients && (
+      {fullPost && ingredients && (
         <div>
           <strong>Ingredients:</strong> {ingredients}
         </div>
       )}
-      <div>
-        <strong>Description:</strong> {contents}
-      </div>
-      {userId && (
+      {contents && fullPost && (
+        <div>
+          <strong>Description:</strong> {contents}
+        </div>
+      )}
+      {author && (
         <em>
-          <br />
-          Written by <User id={userId} />
+          {fullPost && <br />}
+          Written by <User id={author} />
         </em>
       )}
     </article>
@@ -65,4 +76,6 @@ Post.propTypes = {
   ingredients: PropTypes.string,
   imageUrl: PropTypes.string,
   author: PropTypes.string,
+  _id: PropTypes.string.isRequired,
+  fullPost: PropTypes.bool,
 }
