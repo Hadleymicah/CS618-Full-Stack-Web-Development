@@ -28,6 +28,7 @@ Post.propTypes = {
 import PropTypes from 'prop-types'
 import { User } from './User.jsx'
 import { Link } from 'react-router-dom'
+import slug from 'slug'
 
 export function Post({
   title,
@@ -43,7 +44,7 @@ export function Post({
       {fullPost ? (
         <h3>{title}</h3>
       ) : (
-        <Link to={`/posts/${_id}`}>
+        <Link to={`/posts/${_id}/${slug(title)}`}>
           <h3>{title}</h3>
         </Link>
       )}
