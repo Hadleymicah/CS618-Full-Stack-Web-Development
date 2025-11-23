@@ -6,6 +6,8 @@ type Post {
     title: String!
     author: User
     contents: String
+    imageUrl: String
+    ingredients: String
     tags: [String!]
     createdAt: Float
     updatedAt: Float
