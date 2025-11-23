@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+https://obscure-fishstick-r4r7674jx7pg3rvv-5173.app.github.dev/
