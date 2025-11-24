@@ -9,6 +9,8 @@ type Post {
     imageUrl: String
     ingredients: String
     tags: [String!]
+    likeCount: Int #MODIFICATION FOR MILESTONE 2
+    likedBy: [ID!] #MODIFICATION FOR MILESTONE 2
     createdAt: Float
     updatedAt: Float
     }
