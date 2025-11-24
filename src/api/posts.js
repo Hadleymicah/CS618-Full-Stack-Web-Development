@@ -7,24 +7,22 @@ export const getPosts = async (queryParams) => {
 }
 
 export const createPost = async (token, post) => {
-  const res = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/
-posts`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(post),
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+    body: JSON.stringify(post),
+  })
   return await res.json()
 }
 
 export const getPostById = async (postId) => {
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/
-posts/${postId}`)
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts/${postId}`)
+  if (!res.ok) {
+    throw new Error(`Failed to fetch post: ${res.status} ${res.statusText}`)
+  }
   return await res.json()
 }
 

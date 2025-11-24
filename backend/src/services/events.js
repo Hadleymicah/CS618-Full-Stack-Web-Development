@@ -84,7 +84,7 @@ export async function getDailyDurations(postId) {
 }
 //NEW MILESTONE 2 - ADDITION
 export async function getTopPosts(limit = 3) {
-  return await Event.aggregate([
+  const results = await Event.aggregate([
     {
       $match: {
         action: 'startView',
@@ -134,5 +134,11 @@ export async function getTopPosts(limit = 3) {
       },
     },
   ])
+
+  // Transform _id to id for consistency with other post queries
+  return results.map((post) => ({
+    ...post,
+    id: post._id.toString(),
+  }))
 }
 // END NEW MILESTONE 2 - ADDITION
