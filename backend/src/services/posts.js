@@ -60,3 +60,48 @@ export async function updatePost(userId, postId, { title, contents, tags }) {
 export async function deletePost(userId, postId) {
   return await Post.deleteOne({ _id: postId, author: userId })
 }
+
+// NEW FOR MILESTONE 2 - LIKE A POST FUNCTION
+export async function likePost(userId, postId) {
+  const post = await Post.findById(postId)
+  if (!post) return null
+
+  // Check if the user has already liked the post
+  const alreadyLiked = post.likedBy.some(
+    (id) => id.toString() === userId.toString(),
+  )
+  if (alreadyLiked) {
+    //No needed change, just return the post
+    return post
+  }
+
+  //Add user to likedBy and increment likeCount
+  post.likedBy.push(userId)
+  post.likeCount = (post.likeCount || 0) + 1
+
+  await post.save()
+  return post
+}
+
+export async function unlikePost(userId, postId) {
+  const post = await Post.findById(postId)
+  if (!post) return null
+
+  const before = post.likedBy.length
+
+  //Remove user from likedBy
+  post.likedBy = post.likedBy.filter(
+    (id) => id.toString() !== userId.toString(),
+  )
+
+  //if nothing changed, just return it
+  if (post.likedBy.length === before) {
+    return post
+  }
+
+  //decrement likeCount but dont go below 0
+  post.likeCount = Math.max(0, (post.likeCount || 0) - 1)
+
+  await post.save()
+  return post
+}

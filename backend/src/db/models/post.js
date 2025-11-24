@@ -23,9 +23,13 @@ const postSchema = new Schema(
     contents: String,
     //NEW FOR MILESTONE 1
     ingredients: String,
-    //NEW FOR MILESTONE 1
     imageUrl: String,
+    //END NEW FOR MILESTONE 1
     tags: [String],
+    //NEW FOR MILESTONE 2
+    likeCount: { type: Number, default: 0 },
+    likedBy: [{ type: Schema.Types.ObjectId, ref: 'user' }],
+    //END NEW FOR MILESTONE 2
   },
   { timestamps: true },
 )

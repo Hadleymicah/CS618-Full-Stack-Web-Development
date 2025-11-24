@@ -38,6 +38,9 @@ export function Post({
   author,
   id,
   fullPost = false,
+  //MOD FOR MILESTONE 2
+  likeCount = 0,
+  //END MOD FOR MILESTONE 2
 }) {
   return (
     <article>
@@ -65,6 +68,7 @@ export function Post({
         <em>
           {fullPost && <br />}
           Written by <User {...author} />
+          {!fullPost && ` • ${likeCount} ${likeCount === 1 ? 'like' : 'likes'}`}
         </em>
       )}
     </article>
@@ -79,4 +83,7 @@ Post.propTypes = {
   author: PropTypes.shape(User.propTypes),
   id: PropTypes.string.isRequired,
   fullPost: PropTypes.bool,
+  //MOD FOR MILESTONE 2
+  likeCount: PropTypes.number,
+  //END MOD FOR MILESTONE 2
 }

@@ -1,6 +1,13 @@
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query' //MILESTONE 2 - added useQueryClient back in
+
+//MILETONE 2 - added imports
+import { jwtDecode } from 'jwt-decode'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { likePost, unlikePost } from '../api/posts.js'
+//END MILESTONE 2 MODS
+
 import { Header } from '../components/Header.jsx'
 import { Post } from '../components/Post.jsx'
 import { getPostById } from '../api/posts.js'
@@ -34,6 +41,35 @@ export function ViewPost({ postId }) {
     queryFn: () => getPostById(postId),
   })
   const post = postQuery.data
+
+  //ADDITION FOR MILESTONE 2 - LIKE UNLIKE BUTTONS
+  const [token] = useAuth()
+  const queryClient = useQueryClient()
+
+  const currentUserId = token ? jwtDecode(token).sub : null
+
+  const userHasLiked =
+    currentUserId &&
+    post?.likedBy?.some(
+      (id) =>
+        id === currentUserId || id?.toString() === currentUserId.toString(),
+    )
+
+  const likeMutation = useMutation({
+    mutationFn: () => likePost(token, postId),
+    onSuccess: (updatedPost) => {
+      queryClient.setQueryData(['post', postId], updatedPost)
+    },
+  })
+
+  const unlikeMutation = useMutation({
+    mutationFn: () => unlikePost(token, postId),
+    onSuccess: (updatedPost) => {
+      queryClient.setQueryData(['post', postId], updatedPost)
+    },
+  })
+
+  //END ADDITION FOR MILESTONE 2
 
   const userInfoQuery = useQuery({
     queryKey: ['users', post?.author],
@@ -76,6 +112,28 @@ export function ViewPost({ postId }) {
       {post ? (
         <div>
           <Post {...post} id={postId} author={userInfo} fullPost />
+          {/* LIKE AND UNLIKE BUTTONS */}
+          <div style={{ marginTop: 8, marginBottom: 8 }}>
+            {token ? (
+              <button
+                type="button"
+                onClick={() =>
+                  userHasLiked ? unlikeMutation.mutate() : likeMutation.mutate()
+                }
+                disabled={likeMutation.isPending || unlikeMutation.isPending}
+              >
+                {userHasLiked ? 'Unlike' : 'Like'}
+              </button>
+            ) : (
+              <em>Log in to like this recipe</em>
+            )}{' '}
+            <strong>
+              {post.likeCount ?? 0}{' '}
+              {(post.likeCount ?? 0) === 1 ? 'like' : 'likes'}
+            </strong>
+          </div>
+
+          <hr />
           <hr />
           <PostStats postId={postId} />
         </div>
