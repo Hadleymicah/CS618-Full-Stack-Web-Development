@@ -27,3 +27,43 @@ export const getPostById = async (postId) => {
 posts/${postId}`)
   return await res.json()
 }
+
+//MOD FOR MILESTONE 2 - LIKE AND UNLIKE POST FUNCTIONS
+export const likePost = async (token, postId) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/posts/${postId}/like`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!res.ok) {
+    throw new Error('failed to like post')
+  }
+
+  return await res.json()
+}
+
+export const unlikePost = async (token, postId) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/posts/${postId}/like`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!res.ok) {
+    throw new Error('failed to unlike post')
+  }
+
+  return await res.json()
+}
+//END MOD FOR MILESTONE 2

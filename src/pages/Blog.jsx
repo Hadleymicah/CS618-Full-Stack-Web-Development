@@ -44,7 +44,7 @@ export function Blog() {
       />
       <br />
       <PostSorting
-        fields={['createdAt', 'updatedAt']}
+        fields={['createdAt', 'updatedAt', 'likeCount']} //ADDTION FOR MILESTONE 2 - LIKECOUNT AS SORT OPTION
         value={sortBy}
         onChange={(value) => setSortBy(value)}
         orderValue={sortOrder}

@@ -6,6 +6,8 @@ export const POST_FIELDS = gql`
     title
     contents
     tags
+    likeCount #MODIFICATION FOR MILESTONE 2
+    likedBy #MODIFICATION FOR MILESTONE 2
     updatedAt
     createdAt
     author {
@@ -52,3 +54,23 @@ export const CREATE_POST = gql`
     }
   }
 `
+
+//MODIFICATION FOR MILESTONE 2 - ADDED
+export const LIKE_POST = gql`
+  ${POST_FIELDS}
+  mutation likePost($postId: ID!) {
+    likePost(postId: $postId) {
+      ...PostFields
+    }
+  }
+`
+
+export const UNLIKE_POST = gql`
+  ${POST_FIELDS}
+  mutation unlikePost($postId: ID!) {
+    unlikePost(postId: $postId) {
+      ...PostFields
+    }
+  }
+`
+//END MODIFICATION FOR MILESTONE 2 - ADDED

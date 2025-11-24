@@ -6,6 +6,10 @@ import {
   createPost,
   updatePost,
   deletePost,
+  //MOD for MILESTONE 2 - NEW ROUTES FOR LIKES
+  likePost,
+  unlikePost,
+  //END MOD for MILESTONE 2
 } from '../services/posts.js'
 
 import { requireAuth } from '../middleware/jwt.js'
@@ -73,4 +77,35 @@ export function postsRoutes(app) {
       return res.status(500).end()
     }
   })
+
+  // MOD FOR MILESTONE 2 - LIKE A POST AND UNLIKE A POST ROUTES
+  app.post('/api/v1/posts/:id/like', requireAuth, async (req, res) => {
+    const { id } = req.params
+    try {
+      const post = await likePost(req.auth.sub, id)
+      if (!post) {
+        return res.status(404).end()
+      }
+      return res.json(post)
+    } catch (err) {
+      console.error('error liking post', err)
+      return res.status(500).end()
+    }
+  })
+
+  app.delete('/api/v1/posts/:id/like', requireAuth, async (req, res) => {
+    const { id } = req.params
+    try {
+      const post = await unlikePost(req.auth.sub, id)
+      if (!post) {
+        return res.status(404).end()
+      }
+      return res.json(post)
+    } catch (err) {
+      console.error('error unliking post', err)
+      return res.status(500).end()
+    }
+  })
+
+  // END MOD FOR MILESTONE 2
 }

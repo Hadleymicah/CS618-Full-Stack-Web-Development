@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { useQuery, useMutation } from '@tanstack/react-query'
+
+import { jwtDecode } from 'jwt-decode'
+import { useAuth } from '../contexts/AuthContext.jsx'
+//MODIFICATION FOR MILESTONE 2
+import { useMutation as useGraphQLMutation } from '@apollo/client/react/index.js'
+import { LIKE_POST, UNLIKE_POST } from '../api/graphql/posts.js'
+//END MODIFICATION FOR MILESTONE 2
+
 import { Header } from '../components/Header.jsx'
 import { Post } from '../components/Post.jsx'
 import { getPostById } from '../api/posts.js'
@@ -34,6 +42,35 @@ export function ViewPost({ postId }) {
     queryFn: () => getPostById(postId),
   })
   const post = postQuery.data
+
+  const [token] = useAuth()
+
+  const currentUserId = token ? jwtDecode(token).sub : null
+
+  const userHasLiked =
+    currentUserId &&
+    post?.likedBy?.some(
+      (id) =>
+        id === currentUserId || id?.toString() === currentUserId.toString(),
+    )
+
+  //MODIFICATION FOR MILESTONE 2 - ADDITION
+  const [likePostMutation] = useGraphQLMutation(LIKE_POST, {
+    variables: { postId },
+    context: { headers: { Authorization: `Bearer ${token}` } },
+    onCompleted: () => {
+      postQuery.refetch()
+    },
+  })
+
+  const [unlikePostMutation] = useGraphQLMutation(UNLIKE_POST, {
+    variables: { postId },
+    context: { headers: { Authorization: `Bearer ${token}` } },
+    onCompleted: () => {
+      postQuery.refetch()
+    },
+  })
+  //END MODIFICATION FOR MILESTONE 2 - ADDITION
 
   const userInfoQuery = useQuery({
     queryKey: ['users', post?.author],
@@ -76,6 +113,27 @@ export function ViewPost({ postId }) {
       {post ? (
         <div>
           <Post {...post} id={postId} author={userInfo} fullPost />
+          {/* MILESTONE 2 LIKE AND UNLIKE */}
+          <div style={{ marginTop: 8, marginBottom: 8 }}>
+            {token ? (
+              <button
+                type="button"
+                onClick={() =>
+                  userHasLiked ? unlikePostMutation() : likePostMutation()
+                }
+              >
+                {userHasLiked ? 'Unlike' : 'Like'}
+              </button>
+            ) : (
+              <em>Log in to like this recipe</em>
+            )}{' '}
+            <strong>
+              {post.likeCount ?? 0}{' '}
+              {(post.likeCount ?? 0) === 1 ? 'like' : 'likes'}
+            </strong>
+          </div>
+          {/* END MILESTONE 2 LIKE AND UNLIKE */}
+          <hr />
           <hr />
           <PostStats postId={postId} />
         </div>
