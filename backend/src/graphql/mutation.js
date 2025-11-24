@@ -3,6 +3,7 @@ import { createUser, loginUser } from '../services/users.js'
 //MODIFICATION FOR MILESTONE 2
 import { createPost, likePost, unlikePost } from '../services/posts.js'
 //END MODIFICATION FOR MILESTONE 2
+import { trackEvent } from '../services/events.js' //CHANGED FOR MILESTONE 2
 
 export const mutationSchema = `#graphql
 type Mutation {
@@ -11,6 +12,7 @@ type Mutation {
     createPost(title: String!, imageUrl: String, ingredients: String, contents: String, tags:[String]): Post
     likePost(postId: ID!): Post #MODIFICATION FOR MILESTONE 2
     unlikePost(postId: ID!): Post #MODIFICATION FOR MILESTONE 2
+    trackEvent(postId: ID!, action: String!, session: String): TrackEventResponse #CHANGED FOR MILESTONE 2
     }
     `
 export const mutationResolver = {
@@ -73,5 +75,11 @@ export const mutationResolver = {
       return await unlikePost(auth.sub, postId)
     },
     //END MODIFICATION FOR MILESTONE 2
+    //CHANGED FOR MILESTONE 2
+    trackEvent: async (parent, { postId, action, session }) => {
+      const event = await trackEvent({ postId, action, session })
+      return { session: event.session }
+    },
+    //END CHANGED FOR MILESTONE 2
   },
 }

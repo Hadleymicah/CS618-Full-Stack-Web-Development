@@ -9,6 +9,10 @@ import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useQuery as useGraphQLQuery } from '@apollo/client/react/index.js'
 import { GET_POSTS, GET_POSTS_BY_AUTHOR } from '../api/graphql/posts.js'
+//ADDITIONS FOR MILESTONE 2
+import { useQuery } from '@tanstack/react-query' //CHANGED FOR MILESTONE 2
+import { getTopPosts } from '../api/events.js' //CHANGED FOR MILESTONE 2
+//ADDITIONS FOR MILESTONE 2
 
 export function Blog() {
   const [author, setAuthor] = useState('')
@@ -19,6 +23,16 @@ export function Blog() {
     variables: { author, options: { sortBy, sortOrder } },
   })
   const posts = postsQuery.data?.postsByAuthor ?? postsQuery.data?.posts ?? []
+
+  // MODIFICATION FOR MILESTONE 2 - ADDITION
+  //CHANGED FOR MILESTONE 2
+  const topPostsQuery = useQuery({
+    queryKey: ['topPosts'],
+    queryFn: () => getTopPosts(),
+  })
+  const topPosts = topPostsQuery.data ?? []
+  //END CHANGED FOR MILESTONE 2
+  // END MODIFICATION FOR MILESTONE 2 - ADDITION
 
   return (
     <div style={{ padding: 8 }}>
@@ -51,6 +65,16 @@ export function Blog() {
         onOrderChange={(orderValue) => setSortOrder(orderValue)}
       />
       <hr />
+      {/* CHANGED FOR MILESTONE 2 */}
+      {topPosts.length > 0 && (
+        <>
+          <h2>Top 3 Most Viewed Recipes</h2>
+          <PostList posts={topPosts} />
+          <hr />
+        </>
+      )}
+      <h2>All Recipes</h2>
+      {/* END CHANGED FOR MILESTONE 2 */}
       <PostList posts={posts} />
     </div>
   )

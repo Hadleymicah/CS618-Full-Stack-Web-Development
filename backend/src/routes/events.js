@@ -3,6 +3,8 @@ import {
   getTotalViews,
   getDailyViews,
   getDailyDurations,
+  // ADDITION FOR MILESTONE 2 - TOPPOSTS
+  getTopPosts,
 } from '../services/events.js'
 import { getPostById } from '../services/posts.js'
 
@@ -58,4 +60,15 @@ export function eventRoutes(app) {
       return res.status(500).end()
     }
   })
+  // MODIFCICATION FOR MILESTONE 2 - ADDITION
+  app.get('/api/v1/events/topViews', async (req, res) => {
+    try {
+      const stats = await getTopPosts(3)
+      return res.json(stats)
+    } catch (err) {
+      console.error('error getting top views', err)
+      return res.status(500).end()
+    }
+  })
+  // END MODIFICATION FOR MILESTONE 2 - ADDITION
 }

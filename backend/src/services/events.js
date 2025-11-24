@@ -82,3 +82,57 @@ export async function getDailyDurations(postId) {
     },
   ])
 }
+//NEW MILESTONE 2 - ADDITION
+export async function getTopPosts(limit = 3) {
+  return await Event.aggregate([
+    {
+      $match: {
+        action: 'startView',
+      },
+    },
+    {
+      $group: {
+        _id: '$post',
+        views: { $count: {} },
+      },
+    },
+    {
+      $sort: {
+        views: -1,
+      },
+    },
+    {
+      $limit: limit,
+    },
+    {
+      $lookup: {
+        from: 'posts',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'post',
+      },
+    },
+    {
+      $unwind: '$post',
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'post.author',
+        foreignField: '_id',
+        as: 'post.author',
+      },
+    },
+    {
+      $unwind: '$post.author',
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ['$post', { views: '$views' }],
+        },
+      },
+    },
+  ])
+}
+// END NEW MILESTONE 2 - ADDITION
